@@ -18,6 +18,11 @@
 
 	<properties>
 		<java.version>20</java.version>
+
+		<sonar.exclusions>br/com/amarques/fimo/config/*.java</sonar.exclusions>
+		<sonar.exclusions>br/com/amarques/fimo/dto/*.java</sonar.exclusions>
+		<sonar.exclusions>br/com/amarques/fimo/enums/*.java</sonar.exclusions>
+		<sonar.exclusions>br/com/amarques/fimo/exceptions/*.java</sonar.exclusions>
 	</properties>
 
 	<dependencies>
