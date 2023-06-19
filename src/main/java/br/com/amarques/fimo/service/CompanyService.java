@@ -6,7 +6,6 @@ import br.com.amarques.fimo.dto.SimpleEntityDTO;
 import br.com.amarques.fimo.dto.createupdate.CreateUpdateCompanyDTO;
 import br.com.amarques.fimo.exceptions.CompanyAlreadyRegisteredException;
 import br.com.amarques.fimo.exceptions.NotFoundException;
-import br.com.amarques.fimo.mapper.CompanyMapper;
 import br.com.amarques.fimo.repository.CompanyRepository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -19,29 +18,27 @@ import java.util.Objects;
 public class CompanyService {
 
     private final CompanyRepository companyRepository;
-    private final CompanyMapper companyMapper;
 
-    public CompanyService(final CompanyRepository companyRepository, final CompanyMapper companyMapper) {
+    public CompanyService(final CompanyRepository companyRepository) {
         this.companyRepository = companyRepository;
-        this.companyMapper = companyMapper;
     }
 
     @Transactional
-    public SimpleEntityDTO create(final CreateUpdateCompanyDTO createUpdateCompanyDTO) {
-        final var registeredCompany = companyRepository.findByStockSymbol(createUpdateCompanyDTO.stockSymbol());
+    public SimpleEntityDTO create(final CreateUpdateCompanyDTO companyDTO) {
+        final var registeredCompany = companyRepository.findByStockSymbol(companyDTO.stockSymbol());
         if(Objects.nonNull(registeredCompany)) {
-            throw new CompanyAlreadyRegisteredException(createUpdateCompanyDTO.stockSymbol());
+            throw new CompanyAlreadyRegisteredException(companyDTO.stockSymbol());
         }
 
-        final var company = companyMapper.dtoToEntity(createUpdateCompanyDTO);
+        final var company = new Company(companyDTO.name(), companyDTO.stockSymbol());
 
         companyRepository.save(company);
 
-        return companyMapper.toSimpleEntityDTO(company.getId());
+        return new SimpleEntityDTO(company.getId());
     }
 
     public CompanyDTO getOne(final Long id) {
-        return companyMapper.entityToDTO(findCompanyById(id));
+        return new CompanyDTO(findCompanyById(id));
     }
 
     public List<CompanyDTO> getAll(final Pageable pageable) {
@@ -51,7 +48,7 @@ public class CompanyService {
             return List.of();
         }
 
-        return companies.stream().map(companyMapper::entityToDTO).toList();
+        return companies.stream().map(CompanyDTO::new).toList();
     }
 
     @Transactional
