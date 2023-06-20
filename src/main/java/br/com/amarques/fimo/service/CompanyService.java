@@ -7,6 +7,8 @@ import br.com.amarques.fimo.dto.createupdate.CreateUpdateCompanyDTO;
 import br.com.amarques.fimo.exceptions.CompanyAlreadyRegisteredException;
 import br.com.amarques.fimo.exceptions.NotFoundException;
 import br.com.amarques.fimo.repository.CompanyRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,14 +43,14 @@ public class CompanyService {
         return new CompanyDTO(findCompanyById(id));
     }
 
-    public List<CompanyDTO> getAll(final Pageable pageable) {
+    public Page<CompanyDTO> getAll(final Pageable pageable) {
         final var companies = companyRepository.findAll(pageable);
 
         if(!companies.hasContent()) {
-            return List.of();
+            return new PageImpl<>(List.of());
         }
 
-        return companies.stream().map(CompanyDTO::new).toList();
+        return new PageImpl<>(companies.stream().map(CompanyDTO::new).toList(), pageable, companies.getTotalElements());
     }
 
     @Transactional

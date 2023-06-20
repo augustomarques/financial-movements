@@ -168,7 +168,7 @@ class CompanyServiceTest {
 
         when(companyRepository.findAll(pageRequest)).thenReturn(pageOfCompanies);
 
-        final List<CompanyDTO> companies = companyService.getAll(pageRequest);
+        final Page<CompanyDTO> companies = companyService.getAll(pageRequest);
 
         assertThat(companies)
                 .isNotNull()
@@ -184,7 +184,7 @@ class CompanyServiceTest {
 
         when(companyRepository.findAll(pageRequest)).thenReturn(pageOfCompanies);
 
-        final List<CompanyDTO> companies = companyService.getAll(pageRequest);
+        final Page<CompanyDTO> companies = companyService.getAll(pageRequest);
 
         assertThat(companies)
                 .isNotNull()

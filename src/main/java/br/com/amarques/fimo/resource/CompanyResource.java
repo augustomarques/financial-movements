@@ -9,12 +9,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
-
-import java.util.List;
 
 @Tag(name = "Company")
 @RestController
@@ -36,7 +35,7 @@ public class CompanyResource {
         LOGGER.info("REST request to create a new Company {}", companyDTO);
 
         final var simpleEntityDTO = companyService.create(companyDTO);
-        final var uri = uriBuilder.path("/api/companies/{id}").buildAndExpand(simpleEntityDTO).toUri();
+        final var uri = uriBuilder.path("/api/companies/{id}").buildAndExpand(simpleEntityDTO.id()).toUri();
 
         return ResponseEntity.created(uri).body(simpleEntityDTO);
     }
@@ -64,7 +63,7 @@ public class CompanyResource {
 
     @GetMapping
     @Operation(summary = "Search all Companies")
-    public ResponseEntity<List<CompanyDTO>> gelAll(@RequestParam(value = "page", defaultValue = "0", required = false) final int page,
+    public ResponseEntity<Page<CompanyDTO>> gelAll(@RequestParam(value = "page", defaultValue = "0", required = false) final int page,
                                                    @RequestParam(value = "size", defaultValue = "10", required = false) final int size) {
         LOGGER.info("REST request to gel all Companies [Page: {}  - Size: {}]", page, size);
 
